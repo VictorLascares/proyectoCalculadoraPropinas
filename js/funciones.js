@@ -65,13 +65,19 @@ function mostrarPlatillos(platillos) {
 
         const contInput = document.createElement('td');
         contInput.classList.add('col-md-2');
-        const cantidad = document.createElement('input');
-        cantidad.type = 'number';
-        cantidad.min = 0;
-        cantidad.value = 0;
-        cantidad.id = `platillo-${platillo.id}`;
+        const inputCantidad = document.createElement('input');
+        inputCantidad.type = 'number';
+        inputCantidad.min = 0;
+        inputCantidad.value = 0;
+        inputCantidad.id = `platillo-${platillo.id}`;
 
-        contInput.appendChild(cantidad);
+        // Funcion que detecta la cantidad y el platillo que se esta agregando
+        inputCantidad.onchange = () => {
+            const cantidad = parseInt(inputCantidad.value);
+            agregarPlatillo({...platillo, cantidad});
+        };
+
+        contInput.appendChild(inputCantidad);
 
         row.appendChild(nombre);
         row.appendChild(precio);
@@ -80,6 +86,32 @@ function mostrarPlatillos(platillos) {
 
         contenido.appendChild(row);
     })
+}
+
+function agregarPlatillo(platillo) {
+    // Extraer el pedido actual
+    let { pedido } = cliente;
+    if (platillo.cantidad > 0) {
+        // Comprueba si el elemento ya existe en el array
+        if (pedido.some( articulo => articulo.id === platillo.id )) {
+        // El articulo ya existe, actualizar la cantidad
+            const pedidoActualizado = pedido.map( articulo => {
+                if (articulo.id === platillo.id) {
+                    articulo.cantidad = platillo.cantidad;
+                }
+                return articulo;
+            })
+            // Se asigna el nuevo array a cliente.pedido
+            cliente.pedido = [...pedidoActualizado];
+        } else {
+            // El articulo no existe, lo agregamos al array de pedido
+            cliente.pedido = [...pedido, platillo];
+        }
+    } else {
+        const resultado = pedido.filter( articulo => articulo.id !== platillo.id );
+        cliente.pedido = [...resultado];
+    }
+    console.log(cliente);
 }
 
 function mostrarSecciones() {
