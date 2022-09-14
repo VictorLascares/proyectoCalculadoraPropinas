@@ -180,9 +180,20 @@ function actualizarResumen() {
         precioValor.textContent = `$${precio}.00`;
         precioTexto.appendChild(precioValor);
 
+        const subtotalTexto = document.createElement('p');
+        subtotalTexto.classList.add('fw-bold');
+        subtotalTexto.textContent = 'Subtotal: ';
+
+        const subtotalValor = document.createElement('span');
+        subtotalValor.classList.add('fw-normal');
+        subtotalValor.textContent = calcularSubtotal(precio,cantidad);
+        subtotalTexto.appendChild(subtotalValor);
+
+
         elemento.appendChild(nombreTexto);
         elemento.appendChild(cantidadTexto);
         elemento.appendChild(precioTexto);
+        elemento.appendChild(subtotalTexto);
 
 
         lista.appendChild(elemento);
@@ -195,6 +206,10 @@ function actualizarResumen() {
     resumen.appendChild(lista);
 
     contenido.appendChild(resumen);
+}
+
+function calcularSubtotal(precio, cantidad) {
+    return `$${precio*cantidad}.00`;
 }
 
 function limpiarHTML() {
