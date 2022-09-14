@@ -113,9 +113,13 @@ function agregarPlatillo(platillo) {
     }
     // Limpiar el codigo HTML previo
     limpiarHTML();
-    
-    // Mostrar el resumen
-    actualizarResumen();
+
+    if (cliente.pedido.length) {
+        // Mostrar el resumen
+        actualizarResumen();
+    } else {
+        mensajePedidoVacio();        
+    }
 }
 
 function actualizarResumen() {
@@ -236,13 +240,19 @@ function eliminarProducto(id) {
     const { pedido } = cliente;
     const resultado = pedido.filter( articulo => articulo.id !== id );
     cliente.pedido = [...resultado];
-    input.value = 0;
     
     // Limpiar el codigo HTML previo
     limpiarHTML();
 
-    // Mostrar resumen
-    actualizarResumen();
+    if (cliente.pedido.length) {
+        // Mostrar el resumen
+        actualizarResumen();
+    } else {
+        mensajePedidoVacio();        
+    }
+
+    // Regresamos el valor del input a 0
+    input.value = 0;
 }
 
 function calcularSubtotal(precio, cantidad) {
@@ -275,6 +285,16 @@ function mostrarAlerta(msg) {
             alerta.remove();
         }, 3000);
     }
+}
+
+function mensajePedidoVacio() {
+    const contenido = document.querySelector('#resumen .contenido');
+
+    const texto = document.createElement('p');
+    texto.classList.add('text-center');
+    texto.textContent = 'Añade los elementos del pedido';
+
+    contenido.appendChild(texto);
 }
 
 export { guardarCliente };
