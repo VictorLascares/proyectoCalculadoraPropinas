@@ -162,6 +162,15 @@ function actualizarResumen() {
         nombreTexto.classList.add('my-4');
         nombreTexto.textContent = nombre;
 
+        const contenido = document.createElement('div');
+        contenido.classList.add('d-flex','justify-content-between','align-items-center')
+
+        const contenidoTexto = document.createElement('div');
+        contenidoTexto.classList.add('d-flex','flex-column');
+
+        const contCantPrec = document.createElement('div');
+        contCantPrec.classList.add('d-flex','gap-4');
+
         const cantidadTexto = document.createElement('p');
         cantidadTexto.classList.add('fw-bold');
         cantidadTexto.textContent = 'Cantidad: ';
@@ -180,6 +189,9 @@ function actualizarResumen() {
         precioValor.textContent = `$${precio}.00`;
         precioTexto.appendChild(precioValor);
 
+        contCantPrec.appendChild(cantidadTexto);
+        contCantPrec.appendChild(precioTexto);
+
         const subtotalTexto = document.createElement('p');
         subtotalTexto.classList.add('fw-bold');
         subtotalTexto.textContent = 'Subtotal: ';
@@ -189,11 +201,22 @@ function actualizarResumen() {
         subtotalValor.textContent = calcularSubtotal(precio,cantidad);
         subtotalTexto.appendChild(subtotalValor);
 
+        contenidoTexto.appendChild(contCantPrec);
+        contenidoTexto.appendChild(subtotalTexto);
+
+        const btnEliminar = document.createElement('button');
+        btnEliminar.classList.add('btn','btn-danger');
+        btnEliminar.textContent = 'Eliminar';
+
+        // Funcion para eliminar del pedido
+        btnEliminar.onclick = () => eliminarProducto(id);
+
+        contenido.appendChild(contenidoTexto);
+        contenido.appendChild(btnEliminar);
+
 
         elemento.appendChild(nombreTexto);
-        elemento.appendChild(cantidadTexto);
-        elemento.appendChild(precioTexto);
-        elemento.appendChild(subtotalTexto);
+        elemento.appendChild(contenido);
 
 
         lista.appendChild(elemento);
@@ -206,6 +229,20 @@ function actualizarResumen() {
     resumen.appendChild(lista);
 
     contenido.appendChild(resumen);
+}
+
+function eliminarProducto(id) {
+    const input = document.querySelector(`#platillo-${id}`);
+    const { pedido } = cliente;
+    const resultado = pedido.filter( articulo => articulo.id !== id );
+    cliente.pedido = [...resultado];
+    input.value = 0;
+    
+    // Limpiar el codigo HTML previo
+    limpiarHTML();
+
+    // Mostrar resumen
+    actualizarResumen();
 }
 
 function calcularSubtotal(precio, cantidad) {
