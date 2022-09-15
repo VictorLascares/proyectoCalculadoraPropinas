@@ -1,3 +1,5 @@
+import { contenidoResumen, contenidoPlatillos } from './selectores.js';
+
 let cliente = {
     mesa: '',
     hora: '',
@@ -46,7 +48,6 @@ function obtenerPlatillos() {
 }
 
 function mostrarPlatillos(platillos) {
-    const contenido = document.querySelector('#platillos .contenido');
     platillos.forEach(platillo => {
         const row = document.createElement('tr');
 
@@ -84,7 +85,7 @@ function mostrarPlatillos(platillos) {
         row.appendChild(categoria);
         row.appendChild(contInput);
 
-        contenido.appendChild(row);
+        contenidoPlatillos.appendChild(row);
     })
 }
 
@@ -123,8 +124,6 @@ function agregarPlatillo(platillo) {
 }
 
 function actualizarResumen() {
-    const contenido = document.querySelector('#resumen .contenido');
-
     const resumen = document.createElement('div');
     resumen.classList.add('col-md-6','card','py-2','px-3','shadow');
 
@@ -232,7 +231,7 @@ function actualizarResumen() {
     resumen.appendChild(hora);
     resumen.appendChild(lista);
 
-    contenido.appendChild(resumen);
+    contenidoResumen.appendChild(resumen);
 
 
     // Mostrar formulario de propinas
@@ -264,9 +263,8 @@ function calcularSubtotal(precio, cantidad) {
 }
 
 function limpiarHTML() {
-    const contenido = document.querySelector('#resumen .contenido');
-    while(contenido.firstChild) {
-        contenido.removeChild(contenido.firstChild);
+    while(contenidoResumen.firstChild) {
+        contenidoResumen.removeChild(contenidoResumen.firstChild);
     }
 }
 
@@ -292,18 +290,14 @@ function mostrarAlerta(msg) {
 }
 
 function mensajePedidoVacio() {
-    const contenido = document.querySelector('#resumen .contenido');
-
     const texto = document.createElement('p');
     texto.classList.add('text-center');
     texto.textContent = 'Añade los elementos del pedido';
 
-    contenido.appendChild(texto);
+    contenidoResumen.appendChild(texto);
 }
 
 function formularioPropinas() {
-    const contenido = document.querySelector('#resumen .contenido');
-
     const formulario = document.createElement('div');
     formulario.classList.add('col-md-6','formulario');
     
@@ -320,6 +314,7 @@ function formularioPropinas() {
     radio10.name = 'propina';
     radio10.value = "10";
     radio10.classList.add('form-check-input');
+    radio10.onclick = calcularPropina;
 
     const radio10Label = document.createElement('label');
     radio10Label.textContent = '10%';
@@ -337,6 +332,7 @@ function formularioPropinas() {
     radio25.name = 'propina';
     radio25.value = "25";
     radio25.classList.add('form-check-input');
+    radio25.onclick = calcularPropina;
 
     const radio25Label = document.createElement('label');
     radio25Label.textContent = '25%';
@@ -354,6 +350,7 @@ function formularioPropinas() {
     radio50.name = 'propina';
     radio50.value = "50";
     radio50.classList.add('form-check-input');
+    radio50.onclick = calcularPropina;
 
     const radio50Label = document.createElement('label');
     radio50Label.textContent = '50%';
@@ -373,7 +370,25 @@ function formularioPropinas() {
 
     formulario.appendChild(divFormulario);
 
-    contenido.appendChild(formulario);
+    contenidoResumen.appendChild(formulario);
+}
+
+function calcularPropina(e) {
+    const { pedido } = cliente;
+    let subtotal = 0;
+
+    pedido.forEach( articulo => {
+        subtotal += articulo.cantidad*articulo.precio;
+    })
+    // Valor del radio button seleccionado con el porcentaje de propina
+    const propinaSeleccionada = parseInt(e.target.value);
+
+    // Calcular propina en base al porcentaje
+    const propina = subtotal * (propinaSeleccionada/100);
+
+    // Calcular el total
+    const total = propina + subtotal;
+    console.log(`Subtotal: ${subtotal} \nPropina: ${propina} \nTotal: ${total}`);
 }
 
 export { guardarCliente };
