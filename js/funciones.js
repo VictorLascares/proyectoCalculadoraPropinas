@@ -40,7 +40,7 @@ function guardarCliente() {
 }
 
 function obtenerPlatillos() {
-    const url = 'http://localhost:4000/platillos';
+    const url = 'https://my-json-server.typicode.com/VictorLascares/proyectoCalculadoraPropinas/platillos';
     fetch(url)
         .then(respuesta => respuesta.json())
         .then(resultado => mostrarPlatillos(resultado))
